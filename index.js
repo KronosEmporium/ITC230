@@ -1,24 +1,40 @@
-const http = require("http");
-const fs = require("fs");
+'use strict'
+const express = require('express');
+const bodyParser = require('body-parser');
+let exphbs = require('express-handlebars');
 
-const data = require("./data.js");
+const data = require('./data.js');
 
-http.createServer((req,res) => {
-    
-    const path = req.url.toLowerCase();
-    
-    switch(path) {
-        case '/':
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end('Home Page\nThis is the home page.\nThe array of albums in data.js contains ' + data.getAll().length + ' items.');
-            break;
-        case '/about':
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end('About Page\n\nThis is a page about Crosby. Crosby is a student at Seattle Central College. Crosby likes playing and listening to music.');
-            break;
-        default:
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end('404 Page Not Found\n\nThe page you requested is unavailable.');
-            break;
-    }
-}).listen(process.env.PORT || 3000);
+const app = express();
+
+app.engine('handlebars', exphbs({ defaultLayout: false }));
+app.set('view engine', 'handlebars');
+
+app.set('port', process.env.PORT || 3000);
+app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+    console.log(data.getAll());
+    res.render('home', {albums: data.getAll()});
+});
+
+app.get('/detail', (req,res) => {
+    let result = data.getAll()[req.query.title];
+    res.render('details', {title: req.query.title, result: result });
+});
+
+app.get('/about', (req, res) => {
+    res.type('text/plain');
+    res.send('About page');
+});
+
+app.use( (req, res) => {
+    res.type('text/plain');
+    res.status(404);
+    res.send('404 - Page not found');
+});
+
+app.listen( app.get('port'), () => {
+    console.log('express started')
+});
