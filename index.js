@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     console.log(data.getAll());
-    res.render('home', {albums: data.getAll()});
+    res.render('home', {albums: JSON.stringify(data.getAll())});
 });
 
 app.get('/detail', (req,res) => {
