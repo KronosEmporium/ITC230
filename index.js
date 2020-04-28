@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 app.get('/detail', (req,res) => {
     let result = data.getAll()[req.query.item];
-    res.render('detail', {title: data.getAll()[req.query.item].name, result: result });
+    res.render('detail', {title: data.getAll()[req.query.item].Name, result: result });
 });
 
 app.get('/about', (req, res) => {
