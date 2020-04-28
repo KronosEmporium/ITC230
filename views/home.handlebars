@@ -8,6 +8,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 </head>
 <body>
-    {{albums}}
+    {{#each albums}}
+    <ul>
+        <a href="detail?item={{@index}}">{{Name}}</a>
+    </ul>
+    {{/each}}
 </body>
 </html>

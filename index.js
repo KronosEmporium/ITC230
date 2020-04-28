@@ -15,13 +15,12 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    console.log(data.getAll());
-    res.render('home', {albums: JSON.stringify(data.getAll())});
+    res.render('home', {albums: data.getAll()});
 });
 
 app.get('/detail', (req,res) => {
-    let result = data.getAll()[req.query.title];
-    res.render('details', {title: req.query.title, result: result });
+    let result = data.getAll()[req.query.item];
+    res.render('detail', {title: data.getAll()[req.query.item].name, result: result });
 });
 
 app.get('/about', (req, res) => {
