@@ -43,5 +43,35 @@ module.exports = {
     getAll: function () {
         
         return albums;
+    },
+    
+    getItem: function (n) {
+        if (albums[n]) {
+            return albums[n];
+            console.log("successfully found item at index ${n}");
+        } else {
+            console.log("no item at index ${n}");
+        }
+    },
+    
+    addItem: function (item) {
+        if (typeof item === "object") {
+            albums.push(item);
+            console.log("successfully added item");
+        } else {
+            return "Item Not Object";
+            console.log("failed to add item");
+        }
+    },
+    
+    deleteItem: function (n) {
+        if (albums[n]) {
+            albums.splice(n, 1);
+            console.log("deleted item at index ${n}");
+            return "successfully deleted";
+        } else {
+            return "failed to delete";
+            console.log("failed to delete item at index ${n}");
+        }
     }
 };

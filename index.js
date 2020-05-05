@@ -35,5 +35,5 @@ app.use( (req, res) => {
 });
 
 app.listen( app.get('port'), () => {
-    console.log('express started')
+    console.log('express started, listening on port ' + app.get('port'));
 });
