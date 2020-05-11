@@ -1,9 +1,18 @@
 'use strict'
 const express = require('express');
 const bodyParser = require('body-parser');
-let exphbs = require('express-handlebars');
+const exphbs = require('express-handlebars');
+const mongoose = require('mongoose');
 
-const data = require('./data.js');
+const Album = require('./models/Album');
+
+const connectionString = "mongodb+srv://user1:P\@ssw0rd1@albums-szcts.mongodb.net/test?retryWrites=true&w=majority";
+
+mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connection.on('open', ()=> {
+    console.log("Database connected");
+});
 
 const app = express();
 
@@ -15,12 +24,39 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.render('home', {albums: data.getAll()});
+    Album.find().lean()
+    .then((result) => {
+        res.render('home', { albums: result });
+    })
+    .catch((err) => {
+        next(err);
+    });
 });
 
-app.get('/detail', (req,res) => {
-    let result = data.getAll()[req.query.item];
-    res.render('detail', {title: data.getAll()[req.query.item].Name, result: result });
+app.get('/detail/:album', (req,res) => {
+    Album.findOne({ Name: req.params.album }).lean()
+    .then((result) => {
+        res.render('detail', { result: result });
+    })
+    .catch((err) => {
+        next(err);
+    });
+});
+
+app.get('/delete/:album', (req,res) => {
+    Album.findOne({ Name: req.params.album }).lean()
+    .then((result) => {
+        Album.deleteOne({ Name: req.params.album }).lean()
+        .then((result) => {
+            res.render('delete', { Name: req.params.album });
+        })
+        .catch((err) => {
+            next(err);
+        });
+    })
+    .catch((err) => {
+        next(err);
+    });
 });
 
 app.get('/about', (req, res) => {
