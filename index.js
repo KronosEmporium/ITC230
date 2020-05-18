@@ -23,6 +23,8 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/api', require('cors')());
+
 app.get('/', (req, res) => {
     Album.find().lean()
     .then((result) => {
@@ -58,6 +60,68 @@ app.get('/delete/:album', (req,res) => {
         next(err);
     });
 });
+
+// Get all albums
+app.get('/api/albums', (req,res) => {
+    const albums = Album.find().lean()
+    .then((result) => {
+        res.status(200).send(result);
+    })
+    .catch((err) => {
+        next(err);
+    });
+});
+
+// Add album
+app.post('/api/albums', async (req, res) => {
+    const album = new Album({
+        Name: req.body.name,
+        Artist: req.body.artist,
+        ReleaseYear: req.body.releaseYear,
+        Genre: req.body.genre,
+        Length: req.body.length
+    });
+    await album.save();
+    res.status(200).send(album);
+});
+
+// Get one album
+app.get('/api/album/:index', (req,res) => {
+    const albums = Album.find().lean()
+    .then((result) => {
+        res.status(200).send(result[req.params.index]);
+    })
+    .catch((err) => {
+        next(err);
+    });
+});
+
+// Update one album
+app.post('/api/album/:id', (req, res) => {
+    const album = find().lean()
+    .then((result) => {
+        album.Name = req.body.name;
+        album.Artist = req.body.artist;
+        album.ReleaseYear = req.body.releaseYear;
+        album.Genre = req.body.genre;
+        album.Length = req.body.length;
+        
+        album.save((err) => {
+            if(err) next(err);
+            else res.status.send(album);
+        });
+    })
+    .catch((err) => {
+        next(err);
+    });
+});
+
+app.delete('/api/delete/album/:id', (req, res) => {
+    const album = Album.deleteOne({ _id: req.params.id }, (err) => {
+        if(err) next(err);
+        else res.status(200).send("Successfully deleted album.");
+    })
+})
 
 app.get('/about', (req, res) => {
     res.type('text/plain');
