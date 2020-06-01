@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>React App Demo</title>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+
+<div id="root"></div>
+<script type="text/babel">
+    class App extends React.Component{
+      constructor(props){
+          super(props);
+          // Set initial state using data from server application
+          this.state = {
+            items: {{{ items }}},
+            curItem: { } // current selected item
+          };
+       }
+       
+      changeCurItem(i) {
+        this.setState({
+            curItem: i
+        });
+      }
+      
+      home() {
+        this.setState({
+            curItem: {}
+        });
+      }
+      
+      render() {
+      
+        if (this.state.curItem.Name == undefined) {
+            const listItems = this.state.items.map((d) => <li onClick={(i)=> {this.changeCurItem(d)}} key={d.Name}>{d.Name}</li>);
+
+            // render app UI elements
+            return (
+              <div>
+                {listItems }
+              </div>
+              );
+        } else {
+            return (
+              <div>
+                <h1>{this.state.curItem.Name }</h1>
+                <p>Artist: {this.state.curItem.Artist }</p>
+                <p>Release Year: {this.state.curItem.ReleaseYear }</p>
+                <p>Genre: {this.state.curItem.Genre }</p>
+                <p>Length: {this.state.curItem.Length }</p>
+                <button onClick={() => {this.home()}}>Back</button>
+              </div>
+            );
+        }
+      }
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>

@@ -28,7 +28,7 @@ app.use('/api', require('cors')());
 app.get('/', (req, res) => {
     Album.find().lean()
     .then((result) => {
-        res.render('home', { albums: result });
+        res.render('home_react', { items: JSON.stringify(result) });
     })
     .catch((err) => {
         next(err);
